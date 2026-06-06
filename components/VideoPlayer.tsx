@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, View, Text, Pressable, Dimensions } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, View, Text, Pressable, Dimensions, BackHandler } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { X } from 'lucide-react-native';
 import { useLiveTVStore } from '../store/useLiveTVStore';
@@ -15,6 +15,18 @@ export function VideoPlayer() {
     player.loop = false;
     player.play();
   });
+
+  // Intercept Android hardware back button to close player instead of exiting app
+  useEffect(() => {
+    if (!currentChannel) return;
+
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      playChannel(null);
+      return true; // returning true prevents default back behavior (exiting app)
+    });
+
+    return () => subscription.remove();
+  }, [currentChannel, playChannel]);
 
   if (!currentChannel) return null;
 

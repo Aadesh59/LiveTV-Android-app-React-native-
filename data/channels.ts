@@ -34,6 +34,14 @@ export const channels: Channel[] = [
     isHD: true,
   },
   {
+    id: "Himalaya Sports HD",
+    name: "Himalaya Sports HD",
+    logo: "https://i.ibb.co/MD6ycv7h/Himalayan-Sports-HD.jpg",
+    url: "http://maxotts.maxdigitaltv.com/x-media/C707/master.m3u8",
+    category: "Sports",
+    isHD: true,
+  },
+  {
     id: "Sky Sports HD",
     name: "Sky Sports HD",
     logo: "https://raw.githubusercontent.com/tv-logo/tv-logos/main/countries/united-kingdom/sky-sports-main-event-uk.png",
