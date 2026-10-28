@@ -5,13 +5,30 @@ export const channels: Channel[] = [
     id: "ch-1",
     name: "Kantipur max HD",
     logo: "https://i.imgur.com/EZUyzhG.jpg",
-    url: "http://103.154.47.133/media/test11.mpd",
+    url: "http://202.79.40.247/iptvlivestream/netKANTIPURCINEPLEX1500.stream/chunks.m3u8",
     category: "Sports",
     isHD: true,
   },
 
   {
     id: "ch-3",
+    name: "Kantipur max-2 HD",
+    logo: "https://i.ibb.co/ShK58p6/Kantipur-Max-2-HD.jpg",
+    url: "http://202.79.40.235/iptvlivestream/KTVMax2HD.stream/chunks.m3u8",
+    category: "Sports",
+    isHD: true,
+  },
+  {
+    id: "ch-111",
+    name: "Kantipur max HD",
+    logo: "https://i.imgur.com/EZUyzhG.jpg",
+    url: "http://103.154.47.133/media/test11.mpd",
+    category: "Sports",
+    isHD: true,
+  },
+
+  {
+    id: "ch-222",
     name: "Kantipur max-2 HD",
     logo: "https://i.ibb.co/ShK58p6/Kantipur-Max-2-HD.jpg",
     url: "http://103.154.47.137/media/test60.mpd",
@@ -35,21 +52,12 @@ export const channels: Channel[] = [
     category: "Sports",
     isHD: true,
   },
- 
+
   {
     id: "one sports HD",
     name: "One sports HD",
     logo: "https://upload.wikimedia.org/wikipedia/commons/1/1f/ONE_Championship.png",
     url: "http://202.79.40.235/iptvlivestream/BeinSports1/chunks.m3u8",
-    category: "Sports",
-    isHD: true,
-  },
-
-  {
-    id: "Star Sports 1 HD (1080p)",
-    name: "Star Sports 1 HD (1080p)",
-    logo: "https://i.imgur.com/E5jjKHI.png",
-    url: "http://103.253.18.58:8000/play/a00m",
     category: "Sports",
     isHD: true,
   },
