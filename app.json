@@ -31,7 +31,9 @@
             "usesCleartextTraffic": true
           }
         }
-      ]
+      ],
+      "expo-image",
+      "expo-status-bar"
     ],
     "extra": {
       "eas": {

@@ -1,30 +1,60 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { StyleSheet, View, Text, Pressable, Dimensions, BackHandler } from 'react-native';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { X } from 'lucide-react-native';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import { useLiveTVStore } from '../store/useLiveTVStore';
 
 const XIcon = X as any;
-
 const { width, height } = Dimensions.get('window');
 
 export function VideoPlayer() {
   const { currentChannel, playChannel } = useLiveTVStore();
+  const videoViewRef = useRef<VideoView>(null);
+  const isFullscreenRef = useRef(false);
 
   const player = useVideoPlayer(currentChannel?.url || '', (player) => {
     player.loop = false;
     player.play();
   });
 
+  // Screen rotation: tilt to landscape → enter fullscreen (video only), tilt back → exit
+  // The orientation listener only handles LANDSCAPE (enter).
+  // Portrait return is handled by the native player itself via onFullscreenExit.
+  // Calling exitFullscreen() from the listener would double-fire and break portrait return.
+  // If the device's system rotation lock is ON, the OS never delivers landscape events — no extra check needed.
+  useEffect(() => {
+    ScreenOrientation.unlockAsync();
+
+    const subscription = ScreenOrientation.addOrientationChangeListener((event) => {
+      const o = event.orientationInfo.orientation;
+      if (
+        o === ScreenOrientation.Orientation.LANDSCAPE_LEFT ||
+        o === ScreenOrientation.Orientation.LANDSCAPE_RIGHT
+      ) {
+        if (!isFullscreenRef.current && videoViewRef.current) {
+          videoViewRef.current.enterFullscreen();
+        }
+      }
+    });
+
+    return () => {
+      ScreenOrientation.removeOrientationChangeListener(subscription);
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+    };
+  }, []);
+
   // Intercept Android hardware back button to close player instead of exiting app
   useEffect(() => {
     if (!currentChannel) return;
-
     const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      if (isFullscreenRef.current && videoViewRef.current) {
+        videoViewRef.current.exitFullscreen();
+        return true;
+      }
       playChannel(null);
       return true; // returning true prevents default back behavior (exiting app)
     });
-
     return () => subscription.remove();
   }, [currentChannel, playChannel]);
 
@@ -33,6 +63,7 @@ export function VideoPlayer() {
   return (
     <View style={styles.container}>
       <VideoView
+        ref={videoViewRef}
         style={styles.video}
         player={player}
         fullscreenOptions={{
@@ -42,8 +73,9 @@ export function VideoPlayer() {
         allowsPictureInPicture
         nativeControls
         contentFit="contain"
+        onFullscreenEnter={() => { isFullscreenRef.current = true; }}
+        onFullscreenExit={() => { isFullscreenRef.current = false; }}
       />
-
       {/* Floating Header */}
       <View style={styles.header}>
         <Pressable onPress={() => playChannel(null)} style={styles.closeButton}>
@@ -116,4 +148,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
